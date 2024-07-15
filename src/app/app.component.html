@@ -1,1 +1,20 @@
+<input type="text" name="name" id="name" #filter/>
+<button type="button" (click)="this.filterLaunchpads(filter.value)">Search</button>
+<ul>
+  <li *ngFor="let launchpad of launchpads">
+    Name: {{ launchpad.name }}
+    <br>
+    Full Name: {{ launchpad.fullName }}
+    <br>
+    Region: {{ launchpad.region }}
+    <br>
+    Launches:
+    <ul>
+      <li *ngFor="let launch of launchpad.launches">
+        Name: {{launch.name}}
+      </li>
+    </ul>
+  </li>
+</ul>
+
 <router-outlet />
