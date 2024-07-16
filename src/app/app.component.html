@@ -1,20 +1,55 @@
-<input type="text" name="name" id="name" #filter/>
-<button type="button" (click)="this.filterLaunchpads(filter.value)">Search</button>
-<ul>
-  <li *ngFor="let launchpad of launchpads">
-    Name: {{ launchpad.name }}
-    <br>
-    Full Name: {{ launchpad.fullName }}
-    <br>
-    Region: {{ launchpad.region }}
-    <br>
-    Launches:
-    <ul>
-      <li *ngFor="let launch of launchpad.launches">
-        Name: {{launch.name}}
-      </li>
-    </ul>
-  </li>
-</ul>
+<form [formGroup]="searchForm" (submit)="filterLaunchpads()">
+  <mat-form-field appearance="outline">
+    <mat-label>Search by name of region</mat-label>
+    <input
+      matInput
+      type="text"
+      name="search-box"
+      id="search-box"
+      placeholder="Ex. Florida"
+      formControlName="searchBox"
+    />
+  </mat-form-field>
+  <button mat-raised-button type="submit">Search</button>
+</form>
+
+<table mat-table [dataSource]="launchpads" class="mat-elevation-z8">
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>Name</th>
+    <td mat-cell *matCellDef="let launchpad">
+      {{ launchpad.fullName }} ({{ launchpad.name }})
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="region">
+    <th mat-header-cell *matHeaderCellDef>Region</th>
+    <td mat-cell *matCellDef="let launchpad">{{ launchpad.region }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="launches">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let launchpad"><button mat-button (click)="openLaunchesDialog(launchpad)">Show launches</button></td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+  <div *matNoDataRow>
+    <div class="mat-cell">No data matching the filter "{{searchForm.value.searchBox}}"</div>
+  </div>
+
+</table>
+<mat-paginator
+  [pageSizeOptions]="[2, 5, 10]"
+  [length]="length"
+  [pageSize]="limit"
+  [pageIndex]="page"
+  (page)="handlePageEvent($event)"
+  showFirstLastButtons
+  aria-label="Select page of launchapds"
+>
+</mat-paginator>
+
+
 
 <router-outlet />

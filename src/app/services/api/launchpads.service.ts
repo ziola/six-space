@@ -18,7 +18,7 @@ class Or {
   private conditions: Array<Record<string, any>> = [];
 
   addCondition(name: string, value: string) {
-    this.conditions.push({ [name]: value });
+    this.conditions.push({ [name]: { $regex: value, $options: 'i' } });
   }
 
   value() {
@@ -75,19 +75,22 @@ export class LaunchpadsService {
         }),
       })
     ).json();
-    return (
-      data?.docs?.map(
-        (rawLaunchpad: any): Launchpad => ({
-          name: rawLaunchpad.name ?? 'Name unknown',
-          fullName: rawLaunchpad.full_name ?? 'Full name unknown',
-          region: rawLaunchpad.region ?? 'Region unknown',
-          wikiLink: 'TODO',
-          launches:
-            rawLaunchpad.launches?.map((rawLaunch: any) => ({
-              name: rawLaunch.name ?? 'Name unknown',
-            })) ?? [],
-        })
-      ) ?? []
-    );
+    return {
+      launchpads:
+        data?.docs?.map(
+          (rawLaunchpad: any): Launchpad => ({
+            name: rawLaunchpad.name ?? 'Name unknown',
+            fullName: rawLaunchpad.full_name ?? 'Full name unknown',
+            region: rawLaunchpad.region ?? 'Region unknown',
+            wikiLink: 'TODO',
+            launches:
+              rawLaunchpad.launches?.map((rawLaunch: any) => ({
+                name: rawLaunch.name ?? 'Name unknown',
+              })) ?? [],
+          })
+        ) ?? [],
+      total: data?.totalDocs ?? 0,
+      page: data?.page ?? 1,
+    };
   }
 }
