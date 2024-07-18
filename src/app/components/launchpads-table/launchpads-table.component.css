@@ -1,0 +1,37 @@
+tr.launchpad-expanded-row {
+  height: 0;
+}
+
+tr.launchpad-row:not(.launchpad-row-expanded):hover {
+  background: whitesmoke;
+}
+
+tr.launchpad-row:not(.launchpad-row-expanded):active {
+  background: #efefef;
+}
+
+.launchpad-row td {
+  border-bottom-width: 0;
+}
+
+.launchpad-expanded-row-wrapper {
+  overflow: hidden;
+  display: flex;
+}
+
+.launchpad-expanded-row-launches {
+  padding: 16px;
+}
+
+.loading-spinner {
+  margin: 8px auto;
+}
+
+.no-results {
+  text-align: center;
+  margin: 16px;
+}
+
+.table {
+  border: solid 1px grey;
+}

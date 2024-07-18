@@ -14,18 +14,6 @@ export type Launchpad = {
 
 type Query = { filter?: string };
 
-class Or {
-  private conditions: Array<Record<string, any>> = [];
-
-  addCondition(name: string, value: string) {
-    this.conditions.push({ [name]: { $regex: value, $options: 'i' } });
-  }
-
-  value() {
-    return this.conditions.length ? this.conditions : undefined;
-  }
-}
-
 @Injectable({
   providedIn: 'root',
 })
@@ -35,15 +23,16 @@ export class LaunchpadsService {
   constructor() {}
 
   private buildQuery(query?: Query) {
-    const or = new Or();
-
     if (query?.filter) {
-      or.addCondition('name', query.filter);
-      or.addCondition('full_name', query.filter);
-      or.addCondition('region', query.filter);
+      return {
+        $or: [
+          { name: { $regex: query.filter, $options: 'i' } },
+          { full_name: { $regex: query.filter, $options: 'i' } },
+          { region: { $regex: query.filter, $options: 'i' } },
+        ],
+      };
     }
-
-    return { $or: or.value() };
+    return undefined;
   }
 
   async queryData({
@@ -62,7 +51,7 @@ export class LaunchpadsService {
         body: JSON.stringify({
           query: this.buildQuery(query),
           options: {
-            page: options?.page ?? 1,
+            page: (options?.page ?? 0) + 1,
             limit: options?.limit ?? 5,
             select: ['name', 'full_name', 'region', 'launches'],
             populate: [
